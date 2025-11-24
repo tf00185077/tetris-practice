@@ -7,7 +7,7 @@ import { LBrick } from "./lib/brick";
 import { handleKeyDown } from "./lib/map";
 
 export default function Home() {
-  const [tetrisMap] = useState(createEmptyMap());
+  const [tetrisMap,setTetrisMap] = useState(createEmptyMap());
   const [brick, setBrick] = useState(LBrick);
   const mapWithBrick = addBrickToMap(tetrisMap, brick);
   useEffect(() => {
