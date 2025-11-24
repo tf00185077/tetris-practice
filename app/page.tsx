@@ -11,7 +11,8 @@ export default function Home() {
   const [brick, setBrick] = useState(LBrick);
   const mapWithBrick = addBrickToMap(tetrisMap, brick);
   useEffect(() => {
-    const handleKeyDownEvent = (event: KeyboardEvent) => handleKeyDown(event, setBrick);
+    const handleKeyDownEvent = (event: KeyboardEvent) =>
+      handleKeyDown(event, setBrick, tetrisMap);
     document.addEventListener("keydown", handleKeyDownEvent);
     return () => {
       document.removeEventListener("keydown", handleKeyDownEvent);
