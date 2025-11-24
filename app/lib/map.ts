@@ -31,3 +31,27 @@ export const addBrickToMap = (tetrisMap: Map, brick: Brick): Map => {
   }
   return copyMap;
 };
+
+export const handleKeyDown = (event: KeyboardEvent,setBrick: React.Dispatch<React.SetStateAction<Brick>>) => {
+    if (event.key === "ArrowLeft") {
+      setBrick(prev => 
+        prev.position.x > 0 ? {
+        ...prev,
+        position: { ...prev.position, x: prev.position.x - 1 },
+      } : prev);
+    }
+    if (event.key === "ArrowRight") {
+      setBrick(prev => 
+        prev.position.x + prev.shapes[0][0].length < MAP_WIDTH ? {
+        ...prev,
+        position: { ...prev.position, x: prev.position.x + 1 },
+      } : prev);
+    }
+    if (event.key === "ArrowDown") {
+      setBrick(prev => 
+        prev.position.y + prev.shapes[0].length < MAP_HEIGHT ? {
+        ...prev,
+        position: { ...prev.position, y: prev.position.y + 1 },
+      } : prev);
+    }
+  };
