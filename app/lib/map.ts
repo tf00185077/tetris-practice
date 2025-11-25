@@ -11,7 +11,7 @@ import {
   willTouchAnotherBrick,
   willTouchBottom,
 } from "./canMove";
-
+import { LBrick, TBrick, OBrick, IBrick } from "./brick";
 export const createEmptyMap = (): Map => {
   return Array.from({ length: MAP_HEIGHT }, () =>
     Array.from({ length: MAP_WIDTH }, () => EMPTY_MAP_VALUE)
@@ -39,46 +39,63 @@ export const addBrickToMap = (tetrisMap: Map, brick: Brick): Map => {
 
 export const handleKeyDown = (
   event: KeyboardEvent,
-  setBrick: React.Dispatch<React.SetStateAction<Brick>>,
-  tetrisMap: Map
+  setGameState: React.Dispatch<
+    React.SetStateAction<{ tetrisMap: Map; brick: Brick }>
+  >
 ) => {
   if (event.key === "ArrowLeft") {
-    setBrick((prev: Brick) => {
+    setGameState((prev: { tetrisMap: Map; brick: Brick }) => {
       if (
-        !willTouchBorder(prev, event, -1, 0) &&
-        !willTouchAnotherBrick(prev, tetrisMap, -1, 0)
+        !willTouchBorder(prev.brick, event, -1, 0) &&
+        !willTouchAnotherBrick(prev.brick, prev.tetrisMap, -1, 0)
       ) {
         return {
           ...prev,
-          position: { ...prev.position, x: prev.position.x - 1 },
+          brick: {
+            ...prev.brick,
+            position: { ...prev.brick.position, x: prev.brick.position.x - 1 },
+          },
         };
       }
       return prev;
     });
   }
   if (event.key === "ArrowRight") {
-    setBrick((prev: Brick) => {
+    setGameState((prev: { tetrisMap: Map; brick: Brick }) => {
       if (
-        !willTouchBorder(prev, event, 1, 0) &&
-        !willTouchAnotherBrick(prev, tetrisMap, 1, 0)
+        !willTouchBorder(prev.brick, event, 1, 0) &&
+        !willTouchAnotherBrick(prev.brick, prev.tetrisMap, 1, 0)
       ) {
         return {
           ...prev,
-          position: { ...prev.position, x: prev.position.x + 1 },
+          brick: {
+            ...prev.brick,
+            position: { ...prev.brick.position, x: prev.brick.position.x + 1 },
+          },
         };
       }
       return prev;
     });
   }
   if (event.key === "ArrowDown") {
-    setBrick((prev: Brick) => {
-      if (!willTouchBottom(prev, tetrisMap)) {
+    setGameState((prev: { tetrisMap: Map; brick: Brick }) => {
+      if (!willTouchBottom(prev.brick, prev.tetrisMap)) {
         return {
           ...prev,
-          position: { ...prev.position, y: prev.position.y + 1 },
+          brick: {
+            ...prev.brick,
+            position: { ...prev.brick.position, y: prev.brick.position.y + 1 },
+          },
+        };
+      } else {
+        const newBrick = [OBrick, TBrick, IBrick, LBrick];
+        const randomIndex = Math.floor(Math.random() * newBrick.length);
+        const randomBrick = newBrick[randomIndex];
+        return {
+          tetrisMap: addBrickToMap(prev.tetrisMap, prev.brick),
+          brick: randomBrick,
         };
       }
-      return prev;
     });
   }
 };
