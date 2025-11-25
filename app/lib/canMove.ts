@@ -12,7 +12,7 @@ export const willTouchBorder = (
   dx: number,
   dy: number
 ): boolean => {
-  const brickShape = brick.shapes[0];
+  const brickShape = brick.shapes[brick.shapeIndex];
   const startX = brick.position.x + dx;
   const startY = brick.position.y + dy;
   if (keyDown.key === "ArrowLeft") {
@@ -28,7 +28,7 @@ export const willTouchBorder = (
 };
 
 export const willTouchBottom = (brick: Brick, tetrisMap: Map): boolean => {
-  const brickShape = brick.shapes[0];
+  const brickShape = brick.shapes[brick.shapeIndex];
   const startY = brick.position.y;
   const startX = brick.position.x;
   for (let i = 0; i < brickShape.length; i++) {
@@ -49,25 +49,53 @@ export const willTouchBottom = (brick: Brick, tetrisMap: Map): boolean => {
   return false;
 };
 
-export const willTouchAnotherBrick = (
-  brick: Brick,
-  tetrisMap: Map,
-  dx: number,
-  dy: number
-): boolean => {
-  const brickShape = brick.shapes[0];
-  const startX = brick.position.x;
-  const startY = brick.position.y;
-  for (let i = 0; i < brickShape.length; i++) {
-    for (let j = 0; j < brickShape[i].length; j++) {
-      if (brickShape[i][j] === 0) continue;
-      const nextY = startY + i + dy;
-      const nextX = startX + j + dx;
-      if (nextY >= MAP_HEIGHT || nextX >= MAP_WIDTH) continue;
+const willCollide = (brick: Brick, tetrisMap: Map): boolean => {
+  const shape = brick.shapes[brick.shapeIndex];
+  const { x, y } = brick.position;
+
+  for (let i = 0; i < shape.length; i++) {
+    for (let j = 0; j < shape[i].length; j++) {
+      if (shape[i][j] === 0) continue;
+      const nextY = y + i;
+      const nextX = x + j;
+
+      if (nextY < 0 || nextY >= MAP_HEIGHT || nextX < 0 || nextX >= MAP_WIDTH) {
+        return true;
+      }
       if (tetrisMap[nextY][nextX] === BRICK_MAP_VALUE) {
         return true;
       }
     }
   }
   return false;
+};
+
+export const willTouchAnotherBrick = (
+  brick: Brick,
+  tetrisMap: Map,
+  dx: number,
+  dy: number
+): boolean => {
+  const movedBrick = {
+    ...brick,
+    position: {
+      x: brick.position.x + dx,
+      y: brick.position.y + dy,
+    },
+  };
+  return willCollide(movedBrick, tetrisMap);
+};
+
+export const canRotateBrick = (brick: Brick, tetrisMap: Map): boolean => {
+  const rotated = rotateBrick(brick);
+  return !willCollide(rotated, tetrisMap);
+};
+
+export const rotateBrick = (brick: Brick): Brick => {
+  const nextShapeIndex =
+    brick.shapeIndex + 1 < brick.shapes.length ? brick.shapeIndex + 1 : 0;
+  return {
+    ...brick,
+    shapeIndex: nextShapeIndex,
+  };
 };

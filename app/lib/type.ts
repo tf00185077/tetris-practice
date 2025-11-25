@@ -11,6 +11,7 @@ type Brick = {
     y: number;
   };
   shapes: (0 | 1)[][][];
+  shapeIndex: number;
 }
 
 export type { Map, Brick };

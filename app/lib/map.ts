@@ -10,6 +10,8 @@ import {
   willTouchBorder,
   willTouchAnotherBrick,
   willTouchBottom,
+  canRotateBrick,
+  rotateBrick,
 } from "./canMove";
 import { LBrick, TBrick, OBrick, IBrick } from "./brick";
 export const createEmptyMap = (): Map => {
@@ -19,7 +21,7 @@ export const createEmptyMap = (): Map => {
 };
 
 export const addBrickToMap = (tetrisMap: Map, brick: Brick): Map => {
-  const brickShape = brick.shapes[0]; //todo: handle multiple shapes
+  const brickShape = brick.shapes[brick.shapeIndex];
   const startX = brick.position.x;
   const startY = brick.position.y;
   const copyMap: Map = tetrisMap.map((row) => [...row]);
@@ -80,6 +82,18 @@ export const handleKeyDown = (
   if (event.key === "ArrowDown") {
     setGameState((prev: { tetrisMap: Map; brick: Brick }) => {
       return handleStepDown(prev);
+    });
+  }
+  if (event.key === "ArrowUp") {
+    setGameState((prev: { tetrisMap: Map; brick: Brick }) => {
+      const canRotate = canRotateBrick(prev.brick, prev.tetrisMap);
+      if (canRotate) {
+        return {
+          ...prev,
+          brick: rotateBrick(prev.brick),
+        };
+      }
+      return prev;
     });
   }
 };

@@ -19,6 +19,7 @@ export const LBrick: Brick = {
       [1, 0],
     ],
   ],
+  shapeIndex: 0,
 };
 
 export const TBrick: Brick = {
@@ -36,6 +37,7 @@ export const TBrick: Brick = {
       [0, 1, 0],
     ],
   ],
+  shapeIndex: 0,
 };
 
 export const OBrick: Brick = {
@@ -49,6 +51,7 @@ export const OBrick: Brick = {
       [1, 1],
     ],
   ],
+  shapeIndex: 0,
 };
 
 export const IBrick: Brick = {
@@ -57,4 +60,5 @@ export const IBrick: Brick = {
     y: 0,
   },
   shapes: [[[1, 1, 1, 1]], [[1], [1], [1], [1]]],
+  shapeIndex: 0,
 };
