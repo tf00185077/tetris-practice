@@ -7,13 +7,13 @@ import {
   type Brick,
 } from "./type";
 import {
-  willTouchBorder,
   willTouchAnotherBrick,
   willTouchBottom,
   canRotateBrick,
   rotateBrick,
 } from "./canMove";
 import { LBrick, TBrick, OBrick, IBrick } from "./brick";
+
 export const createEmptyMap = (): Map => {
   return Array.from({ length: MAP_HEIGHT }, () =>
     Array.from({ length: MAP_WIDTH }, () => EMPTY_MAP_VALUE)
@@ -28,6 +28,8 @@ export const addBrickToMap = (tetrisMap: Map, brick: Brick): Map => {
   for (let i = 0; i < brickShape.length; i++) {
     for (let j = 0; j < brickShape[i].length; j++) {
       if (
+        startY + i >= 0 &&
+        startX + j >= 0 &&
         brickShape[i][j] === 1 &&
         startY + i < MAP_HEIGHT &&
         startX + j < MAP_WIDTH
@@ -47,10 +49,7 @@ export const handleKeyDown = (
 ) => {
   if (event.key === "ArrowLeft") {
     setGameState((prev: { tetrisMap: Map; brick: Brick }) => {
-      if (
-        !willTouchBorder(prev.brick, event, -1, 0) &&
-        !willTouchAnotherBrick(prev.brick, prev.tetrisMap, -1, 0)
-      ) {
+      if (!willTouchAnotherBrick(prev.brick, prev.tetrisMap, -1, 0)) {
         return {
           ...prev,
           brick: {
@@ -64,10 +63,7 @@ export const handleKeyDown = (
   }
   if (event.key === "ArrowRight") {
     setGameState((prev: { tetrisMap: Map; brick: Brick }) => {
-      if (
-        !willTouchBorder(prev.brick, event, 1, 0) &&
-        !willTouchAnotherBrick(prev.brick, prev.tetrisMap, 1, 0)
-      ) {
+      if (!willTouchAnotherBrick(prev.brick, prev.tetrisMap, 1, 0)) {
         return {
           ...prev,
           brick: {
@@ -120,21 +116,20 @@ export const handleStepDown = (gameState: {
     const randomIndex = Math.floor(Math.random() * newBrick.length);
     const randomBrick = newBrick[randomIndex];
     return {
-      tetrisMap: addBrickToMap(newTetrisMap, gameState.brick),
+      tetrisMap: newTetrisMap,
       brick: randomBrick,
     };
   }
 };
 
 const checkMapNeedCleanLine = (tetrisMap: Map): Map => {
+  const copyMap: Map = tetrisMap.map((row) => [...row]);
   for (let i = 0; i < MAP_HEIGHT; i++) {
-    if (tetrisMap[i].every((cell) => cell === BRICK_MAP_VALUE)) {
-      tetrisMap.splice(i, 1);
-      tetrisMap.unshift(
-        Array.from({ length: MAP_WIDTH }, () => EMPTY_MAP_VALUE)
-      );
+    if (copyMap[i].every((cell) => cell === BRICK_MAP_VALUE)) {
+      copyMap.splice(i, 1);
+      copyMap.unshift(Array.from({ length: MAP_WIDTH }, () => EMPTY_MAP_VALUE));
       i--;
     }
   }
-  return tetrisMap;
+  return copyMap;
 };

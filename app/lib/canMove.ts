@@ -6,26 +6,6 @@ import {
   type Brick,
   type Map,
 } from "./type";
-export const willTouchBorder = (
-  brick: Brick,
-  keyDown: KeyboardEvent,
-  dx: number,
-  dy: number
-): boolean => {
-  const brickShape = brick.shapes[brick.shapeIndex];
-  const startX = brick.position.x + dx;
-  const startY = brick.position.y + dy;
-  if (keyDown.key === "ArrowLeft") {
-    return startX < 0;
-  }
-  if (keyDown.key === "ArrowRight") {
-    return startX + brickShape[0].length > MAP_WIDTH;
-  }
-  if (keyDown.key === "ArrowDown") {
-    return startY + brickShape.length >= MAP_HEIGHT;
-  }
-  return true;
-};
 
 export const willTouchBottom = (brick: Brick, tetrisMap: Map): boolean => {
   const brickShape = brick.shapes[brick.shapeIndex];
