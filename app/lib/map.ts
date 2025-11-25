@@ -108,5 +108,4 @@ export const handleStepDown = (gameState: {
       brick: randomBrick,
     };
   }
-  return gameState;
 };
