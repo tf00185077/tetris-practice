@@ -100,12 +100,27 @@ export const handleStepDown = (gameState: {
       },
     };
   } else {
+    const mapCheck = addBrickToMap(gameState.tetrisMap, gameState.brick);
+    const newTetrisMap = checkMapNeedCleanLine(mapCheck);
     const newBrick = [OBrick, TBrick, IBrick, LBrick];
     const randomIndex = Math.floor(Math.random() * newBrick.length);
     const randomBrick = newBrick[randomIndex];
     return {
-      tetrisMap: addBrickToMap(gameState.tetrisMap, gameState.brick),
+      tetrisMap: addBrickToMap(newTetrisMap, gameState.brick),
       brick: randomBrick,
     };
   }
+};
+
+const checkMapNeedCleanLine = (tetrisMap: Map): Map => {
+  for (let i = 0; i < MAP_HEIGHT; i++) {
+    if (tetrisMap[i].every((cell) => cell === BRICK_MAP_VALUE)) {
+      tetrisMap.splice(i, 1);
+      tetrisMap.unshift(
+        Array.from({ length: MAP_WIDTH }, () => EMPTY_MAP_VALUE)
+      );
+      i--;
+    }
+  }
+  return tetrisMap;
 };

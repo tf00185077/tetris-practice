@@ -40,7 +40,7 @@ export const willTouchBottom = (brick: Brick, tetrisMap: Map): boolean => {
       if (nextY >= MAP_HEIGHT) {
         return true;
       }
-      
+
       if (tetrisMap[nextY][nextX] === BRICK_MAP_VALUE) {
         return true;
       }
@@ -56,14 +56,15 @@ export const willTouchAnotherBrick = (
   dy: number
 ): boolean => {
   const brickShape = brick.shapes[0];
-  const startX = brick.position.x + dx;
-  const startY = brick.position.y + dy;
+  const startX = brick.position.x;
+  const startY = brick.position.y;
   for (let i = 0; i < brickShape.length; i++) {
     for (let j = 0; j < brickShape[i].length; j++) {
-      if (
-        brickShape[i][j] === 1 &&
-        tetrisMap[startY + i][startX + j] === BRICK_MAP_VALUE
-      ) {
+      if (brickShape[i][j] === 0) continue;
+      const nextY = startY + i + dy;
+      const nextX = startX + j + dx;
+      if (nextY >= MAP_HEIGHT || nextX >= MAP_WIDTH) continue;
+      if (tetrisMap[nextY][nextX] === BRICK_MAP_VALUE) {
         return true;
       }
     }
