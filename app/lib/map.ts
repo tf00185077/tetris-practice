@@ -6,7 +6,11 @@ import {
   type Map,
   type Brick,
 } from "./type";
-import { willTouchBorder, willTouchAnotherBrick, willTouchBottom } from "./canMove";
+import {
+  willTouchBorder,
+  willTouchAnotherBrick,
+  willTouchBottom,
+} from "./canMove";
 
 export const createEmptyMap = (): Map => {
   return Array.from({ length: MAP_HEIGHT }, () =>
@@ -36,14 +40,13 @@ export const addBrickToMap = (tetrisMap: Map, brick: Brick): Map => {
 export const handleKeyDown = (
   event: KeyboardEvent,
   setBrick: React.Dispatch<React.SetStateAction<Brick>>,
-  tetrisMap: Map,
+  tetrisMap: Map
 ) => {
   if (event.key === "ArrowLeft") {
     setBrick((prev: Brick) => {
       if (
         !willTouchBorder(prev, event, -1, 0) &&
-        !willTouchAnotherBrick(prev, tetrisMap, -1, 0) &&
-        !willTouchBottom(prev)
+        !willTouchAnotherBrick(prev, tetrisMap, -1, 0)
       ) {
         return {
           ...prev,
@@ -57,8 +60,7 @@ export const handleKeyDown = (
     setBrick((prev: Brick) => {
       if (
         !willTouchBorder(prev, event, 1, 0) &&
-        !willTouchAnotherBrick(prev, tetrisMap, 1, 0) &&
-        !willTouchBottom(prev)
+        !willTouchAnotherBrick(prev, tetrisMap, 1, 0)
       ) {
         return {
           ...prev,
@@ -70,7 +72,7 @@ export const handleKeyDown = (
   }
   if (event.key === "ArrowDown") {
     setBrick((prev: Brick) => {
-      if (!willTouchBottom(prev)) {
+      if (!willTouchBottom(prev, tetrisMap)) {
         return {
           ...prev,
           position: { ...prev.position, y: prev.position.y + 1 },
@@ -80,4 +82,3 @@ export const handleKeyDown = (
     });
   }
 };
-
