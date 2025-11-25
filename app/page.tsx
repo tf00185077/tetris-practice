@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import TetrisMap from "./TetrisMap";
 import { createEmptyMap, addBrickToMap } from "./lib/map";
 import { LBrick } from "./lib/brick";
-import { handleKeyDown } from "./lib/map";
+import { handleKeyDown, handleStepDown } from "./lib/map";
 import { type Map, type Brick } from "./lib/type";
 
 export default function Home() {
@@ -16,9 +16,15 @@ export default function Home() {
   useEffect(() => {
     const handleKeyDownEvent = (event: KeyboardEvent) =>
       handleKeyDown(event, setGameState);
+
+    const handleEverySecondDown = setInterval(
+      () => setGameState((prev) => handleStepDown(prev)),
+      1000
+    );
     document.addEventListener("keydown", handleKeyDownEvent);
     return () => {
       document.removeEventListener("keydown", handleKeyDownEvent);
+      clearInterval(handleEverySecondDown);
     };
   }, []);
 

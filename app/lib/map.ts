@@ -79,23 +79,34 @@ export const handleKeyDown = (
   }
   if (event.key === "ArrowDown") {
     setGameState((prev: { tetrisMap: Map; brick: Brick }) => {
-      if (!willTouchBottom(prev.brick, prev.tetrisMap)) {
-        return {
-          ...prev,
-          brick: {
-            ...prev.brick,
-            position: { ...prev.brick.position, y: prev.brick.position.y + 1 },
-          },
-        };
-      } else {
-        const newBrick = [OBrick, TBrick, IBrick, LBrick];
-        const randomIndex = Math.floor(Math.random() * newBrick.length);
-        const randomBrick = newBrick[randomIndex];
-        return {
-          tetrisMap: addBrickToMap(prev.tetrisMap, prev.brick),
-          brick: randomBrick,
-        };
-      }
+      return handleStepDown(prev);
     });
   }
+};
+
+export const handleStepDown = (gameState: {
+  tetrisMap: Map;
+  brick: Brick;
+}): { tetrisMap: Map; brick: Brick } => {
+  if (!willTouchBottom(gameState.brick, gameState.tetrisMap)) {
+    return {
+      ...gameState,
+      brick: {
+        ...gameState.brick,
+        position: {
+          ...gameState.brick.position,
+          y: gameState.brick.position.y + 1,
+        },
+      },
+    };
+  } else {
+    const newBrick = [OBrick, TBrick, IBrick, LBrick];
+    const randomIndex = Math.floor(Math.random() * newBrick.length);
+    const randomBrick = newBrick[randomIndex];
+    return {
+      tetrisMap: addBrickToMap(gameState.tetrisMap, gameState.brick),
+      brick: randomBrick,
+    };
+  }
+  return gameState;
 };
